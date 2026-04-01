@@ -9,6 +9,8 @@ builder.Services.AddRazorComponents()
 
 
 builder.Services.AddSingleton<IPatientService, PatientService>();
+builder.Services.AddSingleton<IDoctorService, DoctorService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
