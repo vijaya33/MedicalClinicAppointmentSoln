@@ -1,0 +1,226 @@
+﻿@page "/billing"
+@rendermode InteractiveServer
+@using MedicalClinicAppointment.Models
+@using MedicalClinicAppointment.Services
+@inject IPatientService PatientService
+@inject IDoctorService DoctorService
+@inject IAppointmentService AppointmentService
+@inject IBillService BillService
+
+<PageTitle>Billing</PageTitle>
+
+<h3 class="mb-4">Billing</h3>
+
+<EditForm Model="@bill" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="card shadow-sm p-4">
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Patient</label>
+                <InputSelect class="form-control" @bind-Value="bill.PatientId">
+                    <option value="0">-- Select Patient --</option>
+                    @foreach (var patient in patients)
+                    {
+                        <option value="@patient.Id">@patient.FirstName @patient.LastName</option>
+                    }
+                </InputSelect>
+                <ValidationMessage For="@(() => bill.PatientId)" />
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Doctor</label>
+                <InputSelect class="form-control" @bind-Value="bill.DoctorId" @onchange="OnDoctorChanged">
+                    <option value="0">-- Select Doctor --</option>
+                    @foreach (var doctor in doctors)
+                    {
+                        <option value="@doctor.Id">Dr. @doctor.FirstName @doctor.LastName (@doctor.Specialization)</option>
+                    }
+                </InputSelect>
+                <ValidationMessage For="@(() => bill.DoctorId)" />
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Appointment</label>
+                <InputSelect class="form-control" @bind-Value="selectedAppointmentId">
+                    <option value="">-- Optional: Select Appointment --</option>
+                    @foreach (var appointment in appointments)
+                    {
+                        var patient = patients.FirstOrDefault(p => p.Id == appointment.PatientId);
+                        var doctor = doctors.FirstOrDefault(d => d.Id == appointment.DoctorId);
+
+                        <option value="@appointment.Id">
+                            @($"{appointment.AppointmentDate.ToShortDateString()} - {patient?.FirstName} {patient?.LastName} - Dr. {doctor?.FirstName} {doctor?.LastName}")
+                        </option>
+                    }
+                </InputSelect>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Bill Date</label>
+                <InputDate class="form-control" @bind-Value="bill.BillDate" />
+                <ValidationMessage For="@(() => bill.BillDate)" />
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label class="form-label">Consultation Fee</label>
+                <InputNumber class="form-control" @bind-Value="bill.ConsultationFee" @bind-Value:after="RecalculatePayableAmount" />
+                <ValidationMessage For="@(() => bill.ConsultationFee)" />
+            </div>
+
+            <div class="col-md-4 mb-3">
+                <label class="form-label">Insurance Coverage</label>
+                <InputNumber class="form-control" @bind-Value="bill.InsuranceCoverage" @bind-Value:after="RecalculatePayableAmount" />
+                <ValidationMessage For="@(() => bill.InsuranceCoverage)" />
+            </div>
+
+            <div class="col-md-4 mb-3">
+                <label class="form-label">Patient Payable Amount</label>
+                <InputNumber class="form-control" @bind-Value="bill.PatientPayableAmount" readonly />
+                <ValidationMessage For="@(() => bill.PatientPayableAmount)" />
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8 mb-3">
+                <label class="form-label">Notes</label>
+                <InputTextArea class="form-control" @bind-Value="bill.Notes" />
+            </div>
+
+            <div class="col-md-4 mb-3">
+                <label class="form-label">Payment Status</label>
+                <InputSelect class="form-control" @bind-Value="bill.PaymentStatus">
+                    <option value="Pending">Pending</option>
+                    <option value="Paid">Paid</option>
+                    <option value="Partially Paid">Partially Paid</option>
+                </InputSelect>
+            </div>
+        </div>
+
+        <div class="mt-3">
+            <button type="submit" class="btn btn-primary">Save Bill</button>
+        </div>
+    </div>
+</EditForm>
+
+@if (!string.IsNullOrWhiteSpace(successMessage))
+{
+    <div class="alert alert-success mt-3">
+        @successMessage
+    </div>
+}
+
+@if (bills.Any())
+{
+    <div class="mt-4">
+        <h4>Saved Bills</h4>
+
+        <table class="table table-bordered table-striped mt-3">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Patient</th>
+                    <th>Doctor</th>
+                    <th>Bill Date</th>
+                    <th>Consultation Fee</th>
+                    <th>Insurance Coverage</th>
+                    <th>Patient Payable</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var savedBill in bills)
+                {
+                    var patient = patients.FirstOrDefault(p => p.Id == savedBill.PatientId);
+                    var doctor = doctors.FirstOrDefault(d => d.Id == savedBill.DoctorId);
+
+                    <tr>
+                        <td>@savedBill.Id</td>
+                        <td>@patient?.FirstName @patient?.LastName</td>
+                        <td>Dr. @doctor?.FirstName @doctor?.LastName</td>
+                        <td>@savedBill.BillDate.ToShortDateString()</td>
+                        <td>@savedBill.ConsultationFee.ToString("C")</td>
+                        <td>@savedBill.InsuranceCoverage.ToString("C")</td>
+                        <td>@savedBill.PatientPayableAmount.ToString("C")</td>
+                        <td>@savedBill.PaymentStatus</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@code {
+    private Bill bill = new()
+    {
+        BillDate = DateTime.Today,
+        PaymentStatus = "Pending"
+    };
+
+    private int? selectedAppointmentId;
+    private List<Patient> patients = new();
+    private List<Doctor> doctors = new();
+    private List<Appointment> appointments = new();
+    private List<Bill> bills = new();
+    private string successMessage = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        patients = await PatientService.GetAllPatientsAsync();
+        doctors = await DoctorService.GetAllDoctorsAsync();
+        appointments = await AppointmentService.GetAllAppointmentsAsync();
+        bills = await BillService.GetAllBillsAsync();
+    }
+
+    private async Task OnDoctorChanged(ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value?.ToString(), out int selectedDoctorId))
+        {
+            bill.DoctorId = selectedDoctorId;
+
+            var doctor = doctors.FirstOrDefault(d => d.Id == selectedDoctorId);
+            if (doctor is not null)
+            {
+                bill.ConsultationFee = doctor.ConsultationFee;
+                RecalculatePayableAmount();
+            }
+        }
+
+        await Task.CompletedTask;
+    }
+
+    private void RecalculatePayableAmount()
+    {
+        bill.PatientPayableAmount = bill.ConsultationFee - bill.InsuranceCoverage;
+
+        if (bill.PatientPayableAmount < 0)
+        {
+            bill.PatientPayableAmount = 0;
+        }
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        bill.AppointmentId = selectedAppointmentId;
+
+        RecalculatePayableAmount();
+
+        await BillService.AddBillAsync(bill);
+
+        successMessage = "Bill saved successfully.";
+
+        bill = new Bill
+        {
+            BillDate = DateTime.Today,
+            PaymentStatus = "Pending"
+        };
+
+        selectedAppointmentId = null;
+        bills = await BillService.GetAllBillsAsync();
+    }
+}

@@ -7,9 +7,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+// Register the services here below. 
 
 builder.Services.AddSingleton<IPatientService, PatientService>();
 builder.Services.AddSingleton<IDoctorService, DoctorService>();
+builder.Services.AddSingleton<IAppointmentService, AppointmentService>();
+builder.Services.AddSingleton<IBillService, BillService>();
 
 var app = builder.Build();
 

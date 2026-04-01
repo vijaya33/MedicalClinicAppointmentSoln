@@ -1,0 +1,133 @@
+﻿@page "/appointments/book"
+@rendermode InteractiveServer
+@using MedicalClinicAppointment.Models
+@using MedicalClinicAppointment.Services
+@inject IPatientService PatientService
+@inject IDoctorService DoctorService
+@inject IAppointmentService AppointmentService
+
+<PageTitle>Appointment Booking</PageTitle>
+
+<h3 class="mb-4">Appointment Booking</h3>
+
+<EditForm Model="@appointment" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="card shadow-sm p-4">
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label>Patient</label>
+                <InputSelect class="form-control" @bind-Value="appointment.PatientId">
+                    <option value="0">-- Select Patient --</option>
+                    @foreach (var p in patients)
+                    {
+                        <option value="@p.Id">@p.FirstName @p.LastName</option>
+                    }
+                </InputSelect>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label>Doctor</label>
+                <InputSelect class="form-control" @bind-Value="appointment.DoctorId">
+                    <option value="0">-- Select Doctor --</option>
+                    @foreach (var d in doctors)
+                    {
+                        <option value="@d.Id">Dr. @d.FirstName @d.LastName (@d.Specialization)</option>
+                    }
+                </InputSelect>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label>Appointment Date</label>
+                <InputDate class="form-control" @bind-Value="appointment.AppointmentDate" />
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label>Appointment Time</label>
+                <InputText class="form-control" @bind-Value="appointment.AppointmentTime" placeholder="10:00 AM" />
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label>Reason For Visit</label>
+            <InputTextArea class="form-control" @bind-Value="appointment.ReasonForVisit" />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Book Appointment</button>
+    </div>
+</EditForm>
+
+@if (!string.IsNullOrWhiteSpace(successMessage))
+{
+    <div class="alert alert-success mt-3">@successMessage</div>
+}
+
+@if (appointments.Any())
+{
+    <div class="mt-4">
+        <h4>Booked Appointments</h4>
+
+        <table class="table table-bordered table-striped mt-3">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Patient</th>
+                    <th>Doctor</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Reason</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var a in appointments)
+                {
+                    var patient = patients.FirstOrDefault(x => x.Id == a.PatientId);
+                    var doctor = doctors.FirstOrDefault(x => x.Id == a.DoctorId);
+
+                    <tr>
+                        <td>@a.Id</td>
+                        <td>@patient?.FirstName @patient?.LastName</td>
+                        <td>Dr. @doctor?.FirstName @doctor?.LastName</td>
+                        <td>@a.AppointmentDate.ToShortDateString()</td>
+                        <td>@a.AppointmentTime</td>
+                        <td>@a.ReasonForVisit</td>
+                        <td>@a.Status</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@code {
+    private Appointment appointment = new();
+    private List<Patient> patients = new();
+    private List<Doctor> doctors = new();
+    private List<Appointment> appointments = new();
+    private string successMessage = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        patients = await PatientService.GetAllPatientsAsync();
+        doctors = await DoctorService.GetAllDoctorsAsync();
+        appointments = await AppointmentService.GetAllAppointmentsAsync();
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        await AppointmentService.AddAppointmentAsync(appointment);
+
+        successMessage = "Appointment booked successfully.";
+
+        appointment = new Appointment
+        {
+            AppointmentDate = DateTime.Today
+        };
+
+        appointments = await AppointmentService.GetAllAppointmentsAsync();
+    }
+}
