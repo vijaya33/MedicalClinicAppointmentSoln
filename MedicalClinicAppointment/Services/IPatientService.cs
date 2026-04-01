@@ -10,3 +10,4 @@ namespace MedicalClinicAppointment.Services
         Task<List<Patient>> GetAllPatientsAsync();
     }
 }
+
