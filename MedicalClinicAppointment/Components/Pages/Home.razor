@@ -1,7 +1,91 @@
 ﻿@page "/"
 
-<PageTitle>Home</PageTitle>
+<PageTitle>Medical Clinic Appointment Management</PageTitle>
 
-<h1>Hello, world!</h1>
+<div class="container-fluid mt-4">
+    <div class="p-5 mb-4 bg-light rounded-3 shadow-sm border">
+        <div class="container-fluid py-3">
+            <h1 class="display-5 fw-bold text-primary">
+                Medical Clinic Appointment Management System
+            </h1>
 
-Welcome to your new app.
+            <p class="fs-5 mt-3">
+                Welcome to our modern healthcare operations platform designed to
+                streamline patient registration, doctor management, appointment
+                scheduling, billing, and executive dashboard reporting.
+            </p>
+
+            <p>
+                This application helps clinic administrators and healthcare staff
+                efficiently manage clinical workflows with doctor availability
+                validation, scheduling conflict prevention, invoice generation,
+                SQL Server persistence, and real-time dashboard analytics.
+            </p>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100 border-0">
+                <div class="card-body">
+                    <h3 class="text-primary">Patient & Doctor Management</h3>
+                    <p>
+                        Manage patient profiles, insurance details, emergency
+                        contacts, and doctor specialization, consultation fees,
+                        working hours, and active scheduling status.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100 border-0">
+                <div class="card-body">
+                    <h3 class="text-primary">Smart Appointment Scheduling</h3>
+                    <p>
+                        Book appointments using active doctors only with built-in
+                        doctor slot conflict validation to prevent double booking.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mt-2">
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100 border-0">
+                <div class="card-body">
+                    <h3 class="text-primary">Billing & Invoice Workflow</h3>
+                    <p>
+                        Generate patient invoices, calculate insurance coverage,
+                        track payment status, and manage clinic revenue workflows.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100 border-0">
+                <div class="card-body">
+                    <h3 class="text-primary">Dashboard Analytics</h3>
+                    <p>
+                        Monitor total patients, doctors, appointments, bills,
+                        pending payments, outstanding balances, and today’s
+                        scheduled visits.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-5 p-4 bg-white rounded-3 shadow-sm border">
+        <h3 class="text-success">Technology Platform</h3>
+        <p>
+            Built using <strong>Blazor Web App</strong>,
+            <strong>.NET 10</strong>,
+            <strong>SQL Server</strong>,
+            <strong>Entity Framework Core</strong>,
+            Bootstrap UI, and enterprise-grade healthcare workflow rules.
+        </p>
+    </div>
+</div>
