@@ -79,3 +79,6 @@ MedicalClinicAppointment/
 ├── Program.cs
 └── README.md
 ```
+
+Developer: Vijaya Laxmi Kumbaji  Principal Software Engineer. 
+Technology stack - C#, HTML, .NET CORE 8.0 / 10.0 , CSS.
