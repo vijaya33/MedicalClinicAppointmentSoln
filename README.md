@@ -1,6 +1,27 @@
 This a fully functioning in memory sample Blazor application. Allows the user to register patients, add/manage doctors and appointments, bill the patients etc. 
 
-SQL Server Database persistence functionality will be added soon.
+## 🏥 Functional Modules
+
+- **Home Landing Page**  
+  Enterprise-style clinic SaaS landing page with feature overview and technology stack.
+
+- **Patient Registration**  
+  Patient demographic, insurance, and emergency contact management.
+
+- **Doctor Management**  
+  Doctor profile, specialization, consultation fee, active/inactive scheduling status.
+
+- **Appointment Booking**  
+  Active doctor filtering, scheduling conflict validation, and slot management.
+
+- **Billing & Invoice**  
+  Invoice generation, insurance coverage, patient payable calculation, and payment tracking.
+
+- **Dashboard Analytics**  
+  KPI cards for patients, doctors, appointments, bills, pending payments, and today's appointments.
+
+- **SQL Server Persistence**  
+  Entity Framework Core with SQL Server for durable healthcare workflow storage.
 
 ## 📁 Project Structure
 
