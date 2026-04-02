@@ -141,54 +141,7 @@
         appointments = await AppointmentService.GetAllAppointmentsAsync();
     }
 
-    /*
-    private async Task HandleValidSubmit()
-    {
-        successMessage = string.Empty;
-        errorMessage = string.Empty;
-
-        var selectedDoctor = await DoctorService.GetDoctorByIdAsync(appointment.DoctorId);
-
-        if (selectedDoctor is null)
-        {
-            errorMessage = "Selected doctor was not found.";
-            return;
-        }
-
-        if (!selectedDoctor.IsActive)
-        {
-            errorMessage = $"Doctor {selectedDoctor.FirstName} {selectedDoctor.LastName} is inactive and cannot be scheduled.";
-            doctors = await DoctorService.GetActiveDoctorsAsync();
-            return;
-        }
-
-        var hasConflict = await AppointmentService.HasDoctorConflictAsync(
-            appointment.DoctorId,
-            appointment.AppointmentDate,
-            appointment.AppointmentTime);
-
-        if (hasConflict)
-        {
-            errorMessage = $"Doctor {selectedDoctor.FirstName} {selectedDoctor.LastName} already has an appointment on {appointment.AppointmentDate.ToShortDateString()} at {appointment.AppointmentTime}. Please choose a different time.";
-            return;
-        }
-
-        await AppointmentService.AddAppointmentAsync(appointment);
-
-        successMessage = "Appointment booked successfully.";
-
-        appointment = new Appointment
-        {
-            AppointmentDate = DateTime.Today,
-            AppointmentTime = "10:00 AM",
-            Status = "Scheduled"
-        };
-
-        appointments = await AppointmentService.GetAllAppointmentsAsync();
-        doctors = await DoctorService.GetActiveDoctorsAsync();
-        allDoctors = await DoctorService.GetAllDoctorsAsync();
-    } */
-
+   
     private async Task HandleValidSubmit()
     {
         successMessage = string.Empty;
@@ -221,5 +174,4 @@
         appointments = await AppointmentService.GetAllAppointmentsAsync();
         doctors = await DoctorService.GetActiveDoctorsAsync();
     }
-
 }
