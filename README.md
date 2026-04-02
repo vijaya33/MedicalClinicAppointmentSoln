@@ -1,3 +1,6 @@
-This a sample Blazor application. Allows the user to register patients, manage doctors and appointments, bill the patients etc. 
+This a minimal in memory sample Blazor application. Allows the user to register patients, add/manage doctors and appointments, bill the patients etc. 
 
-This is work in Progress. More functionality will be added soon. 
+This is work in Progress. SQL Server Database persistence functionality will be added soon.
+
+Folder structure is as below: 
+TBD. 
