@@ -21,7 +21,16 @@ namespace MedicalClinicAppointment.Services
 
         public Task<List<Doctor>> GetActiveDoctorsAsync()
         {
-            return Task.FromResult(_doctors.Where(d => d.IsActive).ToList());
+            return Task.FromResult(
+                _doctors
+                    .Where(d => d.IsActive)
+                    .ToList());
+        }
+
+        public Task<Doctor?> GetDoctorByIdAsync(int id)
+        {
+            return Task.FromResult(
+                _doctors.FirstOrDefault(d => d.Id == id));
         }
     }
 }

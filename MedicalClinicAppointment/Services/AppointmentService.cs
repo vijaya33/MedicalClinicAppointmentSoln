@@ -18,5 +18,22 @@ namespace MedicalClinicAppointment.Services
         {
             return Task.FromResult(_appointments.ToList());
         }
+
+        public Task<bool> HasDoctorConflictAsync(int doctorId, DateTime appointmentDate, string appointmentTime)
+        {
+            var normalizedTime = NormalizeTime(appointmentTime);
+
+            var hasConflict = _appointments.Any(a =>
+                a.DoctorId == doctorId &&
+                a.AppointmentDate.Date == appointmentDate.Date &&
+                NormalizeTime(a.AppointmentTime) == normalizedTime);
+
+            return Task.FromResult(hasConflict);
+        }
+
+        private static string NormalizeTime(string? time)
+        {
+            return (time ?? string.Empty).Trim().ToUpperInvariant();
+        }
     }
 }

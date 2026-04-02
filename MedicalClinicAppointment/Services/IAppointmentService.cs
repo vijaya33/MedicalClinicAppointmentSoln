@@ -6,7 +6,6 @@ namespace MedicalClinicAppointment.Services
     {
         Task AddAppointmentAsync(Appointment appointment);
         Task<List<Appointment>> GetAllAppointmentsAsync();
-
-
+        Task<bool> HasDoctorConflictAsync(int doctorId, DateTime appointmentDate, string appointmentTime);
     }
 }

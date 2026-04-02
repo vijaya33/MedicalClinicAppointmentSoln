@@ -1,5 +1,4 @@
-﻿
-using MedicalClinicAppointment.Models;
+﻿using MedicalClinicAppointment.Models;
 
 namespace MedicalClinicAppointment.Services
 {
@@ -7,7 +6,7 @@ namespace MedicalClinicAppointment.Services
     {
         Task AddDoctorAsync(Doctor doctor);
         Task<List<Doctor>> GetAllDoctorsAsync();
-
-        Task<List<Doctor>> GetActiveDoctorsAsync(); 
+        Task<List<Doctor>> GetActiveDoctorsAsync();
+        Task<Doctor?> GetDoctorByIdAsync(int id);
     }
 }

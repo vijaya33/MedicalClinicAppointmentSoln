@@ -17,7 +17,7 @@
     <div class="card shadow-sm p-4">
         <div class="row">
             <div class="col-md-6 mb-3">
-                <label>Patient</label>
+                <label class="form-label">Patient</label>
                 <InputSelect class="form-control" @bind-Value="appointment.PatientId">
                     <option value="0">-- Select Patient --</option>
                     @foreach (var p in patients)
@@ -25,10 +25,11 @@
                         <option value="@p.Id">@p.FirstName @p.LastName</option>
                     }
                 </InputSelect>
+                <ValidationMessage For="@(() => appointment.PatientId)" />
             </div>
 
             <div class="col-md-6 mb-3">
-                <label>Doctor</label>
+                <label class="form-label">Doctor</label>
                 <InputSelect class="form-control" @bind-Value="appointment.DoctorId">
                     <option value="0">-- Select Doctor --</option>
                     @foreach (var d in doctors)
@@ -36,33 +37,46 @@
                         <option value="@d.Id">Dr. @d.FirstName @d.LastName (@d.Specialization)</option>
                     }
                 </InputSelect>
+                <ValidationMessage For="@(() => appointment.DoctorId)" />
             </div>
         </div>
 
         <div class="row">
             <div class="col-md-6 mb-3">
-                <label>Appointment Date</label>
+                <label class="form-label">Appointment Date</label>
                 <InputDate class="form-control" @bind-Value="appointment.AppointmentDate" />
+                <ValidationMessage For="@(() => appointment.AppointmentDate)" />
             </div>
 
             <div class="col-md-6 mb-3">
-                <label>Appointment Time</label>
-                <InputText class="form-control" @bind-Value="appointment.AppointmentTime" placeholder="10:00 AM" />
+                <label class="form-label">Appointment Time</label>
+                <InputText class="form-control" @bind-Value="appointment.AppointmentTime" placeholder="10:00 AM CST" />
+                <ValidationMessage For="@(() => appointment.AppointmentTime)" />
             </div>
         </div>
 
         <div class="mb-3">
-            <label>Reason For Visit</label>
+            <label class="form-label">Reason For Visit</label>
             <InputTextArea class="form-control" @bind-Value="appointment.ReasonForVisit" />
+            <ValidationMessage For="@(() => appointment.ReasonForVisit)" />
         </div>
 
-        <button type="submit" class="btn btn-primary">Book Appointment</button>
+        <button type="submit" class="btn btn-primary w-100">Book Appointment</button>
     </div>
 </EditForm>
 
+@if (!string.IsNullOrWhiteSpace(errorMessage))
+{
+    <div class="alert alert-danger mt-3">
+        @errorMessage
+    </div>
+}
+
 @if (!string.IsNullOrWhiteSpace(successMessage))
 {
-    <div class="alert alert-success mt-3">@successMessage</div>
+    <div class="alert alert-success mt-3">
+        @successMessage
+    </div>
 }
 
 @if (appointments.Any())
@@ -86,7 +100,7 @@
                 @foreach (var a in appointments)
                 {
                     var patient = patients.FirstOrDefault(x => x.Id == a.PatientId);
-                    var doctor = doctors.FirstOrDefault(x => x.Id == a.DoctorId);
+                    var doctor = allDoctors.FirstOrDefault(x => x.Id == a.DoctorId);
 
                     <tr>
                         <td>@a.Id</td>
@@ -104,31 +118,108 @@
 }
 
 @code {
-    private Appointment appointment = new();
+    private Appointment appointment = new()
+    {
+        AppointmentDate = DateTime.Today,
+        AppointmentTime = "10:00 AM",
+        Status = "Scheduled"
+    };
+
     private List<Patient> patients = new();
     private List<Doctor> doctors = new();
+    private List<Doctor> allDoctors = new();
     private List<Appointment> appointments = new();
+
     private string successMessage = string.Empty;
+    private string errorMessage = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
         patients = await PatientService.GetAllPatientsAsync();
-        // doctors = await DoctorService.GetAllDoctorsAsync();  // retrieves all doctors - ACTIVE and INACTIVE.. 
-        doctors = await DoctorService.GetActiveDoctorsAsync(); // retrieves only ACTIVE doctors. 
+        doctors = await DoctorService.GetActiveDoctorsAsync();
+        allDoctors = await DoctorService.GetAllDoctorsAsync();
         appointments = await AppointmentService.GetAllAppointmentsAsync();
     }
 
+    /*
     private async Task HandleValidSubmit()
     {
+        successMessage = string.Empty;
+        errorMessage = string.Empty;
+
+        var selectedDoctor = await DoctorService.GetDoctorByIdAsync(appointment.DoctorId);
+
+        if (selectedDoctor is null)
+        {
+            errorMessage = "Selected doctor was not found.";
+            return;
+        }
+
+        if (!selectedDoctor.IsActive)
+        {
+            errorMessage = $"Doctor {selectedDoctor.FirstName} {selectedDoctor.LastName} is inactive and cannot be scheduled.";
+            doctors = await DoctorService.GetActiveDoctorsAsync();
+            return;
+        }
+
+        var hasConflict = await AppointmentService.HasDoctorConflictAsync(
+            appointment.DoctorId,
+            appointment.AppointmentDate,
+            appointment.AppointmentTime);
+
+        if (hasConflict)
+        {
+            errorMessage = $"Doctor {selectedDoctor.FirstName} {selectedDoctor.LastName} already has an appointment on {appointment.AppointmentDate.ToShortDateString()} at {appointment.AppointmentTime}. Please choose a different time.";
+            return;
+        }
+
         await AppointmentService.AddAppointmentAsync(appointment);
 
         successMessage = "Appointment booked successfully.";
 
         appointment = new Appointment
         {
-            AppointmentDate = DateTime.Today
+            AppointmentDate = DateTime.Today,
+            AppointmentTime = "10:00 AM",
+            Status = "Scheduled"
         };
 
         appointments = await AppointmentService.GetAllAppointmentsAsync();
+        doctors = await DoctorService.GetActiveDoctorsAsync();
+        allDoctors = await DoctorService.GetAllDoctorsAsync();
+    } */
+
+    private async Task HandleValidSubmit()
+    {
+        successMessage = string.Empty;
+
+        var doctor = await DoctorService.GetDoctorByIdAsync(appointment.DoctorId);
+
+        if (doctor is null)
+        {
+            successMessage = "Selected doctor not found.";
+            return;
+        }
+
+        if (!doctor.IsActive)
+        {
+            successMessage = $"Doctor {doctor.FirstName} {doctor.LastName} is inactive and cannot be scheduled.";
+            return;
+        }
+
+        await AppointmentService.AddAppointmentAsync(appointment);
+
+        successMessage = "Appointment booked successfully.";
+
+        appointment = new Appointment
+        {
+            AppointmentDate = DateTime.Today,
+            AppointmentTime = "10:00 AM",
+            Status = "Scheduled"
+        };
+
+        appointments = await AppointmentService.GetAllAppointmentsAsync();
+        doctors = await DoctorService.GetActiveDoctorsAsync();
     }
+
 }
