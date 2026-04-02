@@ -7,5 +7,7 @@ namespace MedicalClinicAppointment.Services
     {
         Task AddDoctorAsync(Doctor doctor);
         Task<List<Doctor>> GetAllDoctorsAsync();
+
+        Task<List<Doctor>> GetActiveDoctorsAsync(); 
     }
 }

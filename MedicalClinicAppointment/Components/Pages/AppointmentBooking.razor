@@ -113,7 +113,8 @@
     protected override async Task OnInitializedAsync()
     {
         patients = await PatientService.GetAllPatientsAsync();
-        doctors = await DoctorService.GetAllDoctorsAsync();
+        // doctors = await DoctorService.GetAllDoctorsAsync();  // retrieves all doctors - ACTIVE and INACTIVE.. 
+        doctors = await DoctorService.GetActiveDoctorsAsync(); // retrieves only ACTIVE doctors. 
         appointments = await AppointmentService.GetAllAppointmentsAsync();
     }
 

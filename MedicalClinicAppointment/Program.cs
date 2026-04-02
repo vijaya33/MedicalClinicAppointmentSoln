@@ -13,6 +13,8 @@ builder.Services.AddSingleton<IPatientService, PatientService>();
 builder.Services.AddSingleton<IDoctorService, DoctorService>();
 builder.Services.AddSingleton<IAppointmentService, AppointmentService>();
 builder.Services.AddSingleton<IBillService, BillService>();
+builder.Services.AddSingleton<IDashboardService, DashboardService>(); 
+
 
 var app = builder.Build();
 

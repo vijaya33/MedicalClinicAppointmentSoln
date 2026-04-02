@@ -1,5 +1,4 @@
-﻿
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace MedicalClinicAppointment.Models
 {
@@ -17,6 +16,10 @@ namespace MedicalClinicAppointment.Models
 
         public int? AppointmentId { get; set; }
 
+        [Required(ErrorMessage = "Invoice number is required.")]
+        [StringLength(50)]
+        public string InvoiceNumber { get; set; } = string.Empty;
+
         [Required(ErrorMessage = "Bill date is required.")]
         [DataType(DataType.Date)]
         public DateTime BillDate { get; set; } = DateTime.Today;
@@ -30,9 +33,15 @@ namespace MedicalClinicAppointment.Models
         [Range(0, 100000, ErrorMessage = "Patient payable amount must be valid.")]
         public decimal PatientPayableAmount { get; set; }
 
+        [Required(ErrorMessage = "Payment method is required.")]
+        [StringLength(50)]
+        public string PaymentMethod { get; set; } = "Cash";
+
         [StringLength(300)]
         public string Notes { get; set; } = string.Empty;
 
+        [Required(ErrorMessage = "Payment status is required.")]
+        [StringLength(50)]
         public string PaymentStatus { get; set; } = "Pending";
     }
 }

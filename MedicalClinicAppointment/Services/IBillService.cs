@@ -1,4 +1,5 @@
-﻿using MedicalClinicAppointment.Models;
+﻿
+using MedicalClinicAppointment.Models;
 
 namespace MedicalClinicAppointment.Services
 {
@@ -6,5 +7,6 @@ namespace MedicalClinicAppointment.Services
     {
         Task AddBillAsync(Bill bill);
         Task<List<Bill>> GetAllBillsAsync();
+        string GenerateNextInvoiceNumber();
     }
 }
