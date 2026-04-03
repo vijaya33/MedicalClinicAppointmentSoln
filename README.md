@@ -1,4 +1,4 @@
-This a fully functioning in memory sample Blazor application. Allows the user to register patients, add/manage doctors and appointments, bill the patients etc. 
+## This a fully functioning in memory sample Blazor application. Allows the user to register patients, add/manage doctors and appointments, bill the patients etc. 
 
 ## 🏥 Functional Modules
 
@@ -20,6 +20,7 @@ This a fully functioning in memory sample Blazor application. Allows the user to
 - **Dashboard Analytics**  
   KPI cards for patients, doctors, appointments, bills, pending payments, and today's appointments.
 
+## Technology stack - Blazor, C#, HTML, .NET CORE 8.0, CSS.
 
 ## 📁 Project Structure
 
@@ -72,4 +73,4 @@ MedicalClinicAppointment/
 ```
 
 Developer: Vijaya Laxmi Kumbaji  Principal Software Engineer. 
-Technology stack - C#, HTML, .NET CORE 8.0 / 10.0 , CSS.
+
