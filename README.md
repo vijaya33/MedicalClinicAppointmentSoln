@@ -20,8 +20,6 @@ This a fully functioning in memory sample Blazor application. Allows the user to
 - **Dashboard Analytics**  
   KPI cards for patients, doctors, appointments, bills, pending payments, and today's appointments.
 
-- **SQL Server Persistence**  
-  Entity Framework Core with SQL Server for durable healthcare workflow storage.
 
 ## 📁 Project Structure
 
@@ -45,9 +43,6 @@ MedicalClinicAppointment/
 │   ├── App.razor
 │   └── Routes.razor
 │
-├── Data/
-│   └── ClinicDbContext.cs
-│
 ├── Models/
 │   ├── Patient.cs
 │   ├── Doctor.cs
@@ -66,10 +61,6 @@ MedicalClinicAppointment/
 │   ├── BillService.cs
 │   ├── IDashboardService.cs
 │   └── DashboardService.cs
-│
-├── Migrations/
-│   └── InitialCreate.cs
-│
 ├── wwwroot/
 │   ├── app.css
 │   ├── bootstrap/
