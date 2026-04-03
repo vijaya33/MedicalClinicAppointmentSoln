@@ -22,7 +22,7 @@
 
 ## Technology stack - Blazor, C#, HTML, .NET CORE 8.0, CSS.
 
-## Solution Architect and Developer: Vijaya Laxmi Kumbaji  Principal Software Engineer. 
+### Solution Architect and Developer: Vijaya Laxmi Kumbaji  Principal Software Engineer. 
 
 ## 📁 Project Structure
 
